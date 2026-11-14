@@ -59,4 +59,13 @@ describe('searchCountries', () => {
       }),
     );
   });
+
+  it('should throw HttpError for unsuccessful HTTP responses', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('Server Error', { status: 500 }));
+
+    await expect(searchCountries('Spain')).rejects.toMatchObject({
+      name: 'HttpError',
+      status: 500,
+    });
+  });
 });
