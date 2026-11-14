@@ -68,4 +68,26 @@ describe('searchCountries', () => {
       status: 500,
     });
   });
+
+  it('should propagate request cancellation', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(
+      new DOMException('The operation was aborted', 'AbortError'),
+    );
+
+    const controller = new AbortController();
+
+    await expect(searchCountries('Spain', controller.signal)).rejects.toMatchObject({
+      name: 'AbortError',
+    });
+  });
+
+  it('should propagate timeout errors', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(
+      new DOMException('The operation timed out', 'TimeoutError'),
+    );
+
+    await expect(searchCountries('Spain')).rejects.toMatchObject({
+      name: 'TimeoutError',
+    });
+  });
 });
