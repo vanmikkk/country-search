@@ -1,4 +1,4 @@
-export function debounce<T extends (...args: unknown[]) => void>(
+export function debounce<T extends (...args: never[]) => void>(
   callback: T,
   delay: number,
 ): (...args: Parameters<T>) => void {
