@@ -127,4 +127,54 @@ describe('createCountrySearch', () => {
     expect(onResults).toHaveBeenCalledTimes(1);
     expect(onResults).toHaveBeenCalledWith(france);
   });
+
+  it('should report an error when the search fails', async () => {
+    const error = new Error('Network error');
+    const search = vi.fn().mockRejectedValue(error);
+    const onResults = vi.fn();
+    const onError = vi.fn();
+
+    const countrySearch = createCountrySearch(search, onResults, 300, onError);
+
+    countrySearch('Spain');
+    await vi.advanceTimersByTimeAsync(300);
+
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith(error);
+    expect(onResults).not.toHaveBeenCalled();
+  });
+
+  it('should ignore errors from an outdated request', async () => {
+    let rejectSpain!: (error: Error) => void;
+
+    const oldError = new Error('Old request failed');
+
+    const search = vi
+      .fn<(query: string, signal: AbortSignal) => Promise<Country[]>>()
+      .mockImplementationOnce(
+        () =>
+          new Promise<Country[]>((_, reject) => {
+            rejectSpain = reject;
+          }),
+      )
+      .mockResolvedValueOnce([]);
+
+    const onResults = vi.fn();
+    const onError = vi.fn();
+
+    const countrySearch = createCountrySearch(search, onResults, 300, onError);
+
+    countrySearch('Spain');
+    await vi.advanceTimersByTimeAsync(300);
+
+    countrySearch('France');
+    await vi.advanceTimersByTimeAsync(300);
+
+    rejectSpain(oldError);
+    await Promise.resolve();
+
+    expect(onError).not.toHaveBeenCalled();
+    expect(onResults).toHaveBeenCalledTimes(1);
+    expect(onResults).toHaveBeenCalledWith([]);
+  });
 });
