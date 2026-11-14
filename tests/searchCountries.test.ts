@@ -1,0 +1,62 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import { searchCountries } from '../src/searchCountries';
+
+describe('searchCountries', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('should fetch countries by name', async () => {
+    const countries = [{ name: 'Spain' }];
+
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify(countries), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    const result = await searchCountries('Spain');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://countries.dev/name/Spain',
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(result).toEqual(countries);
+  });
+
+  it('should encode country name in URL', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('[]', { status: 200 }));
+
+    await searchCountries('South Korea');
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://countries.dev/name/South%20Korea',
+      expect.any(Object),
+    );
+  });
+
+  it('should return an empty array when country is not found', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('Not Found', { status: 404 }));
+
+    const result = await searchCountries('UnknownCountry');
+
+    expect(result).toEqual([]);
+  });
+
+  it('should create an AbortSignal when none is provided', async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response('[]', { status: 200 }));
+
+    await searchCountries('Spain');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        signal: expect.any(AbortSignal),
+      }),
+    );
+  });
+});
