@@ -12,6 +12,11 @@ export function createCountrySearch(search: SearchFunction, delay: number) {
 
   return (query: string): void => {
     controller?.abort();
+
+    if (!query.trim()) {
+      return;
+    }
+
     debouncedSearch(query);
   };
 }
