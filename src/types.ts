@@ -29,3 +29,12 @@ export interface Country {
   alpha3Code: string;
   latlng: number[];
 }
+
+export interface CountryCard {
+  name: string;
+  flag: string;
+  capital: string | null;
+  region: string;
+  population: number;
+  languages: string[];
+}
