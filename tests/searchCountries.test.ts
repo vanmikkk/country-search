@@ -70,13 +70,28 @@ describe('searchCountries', () => {
   });
 
   it('should propagate request cancellation', async () => {
-    vi.spyOn(globalThis, 'fetch').mockRejectedValue(
-      new DOMException('The operation was aborted', 'AbortError'),
-    );
-
     const controller = new AbortController();
 
-    await expect(searchCountries('Spain', controller.signal)).rejects.toMatchObject({
+    vi.spyOn(globalThis, 'fetch').mockImplementation(
+      (_input, init) =>
+        new Promise((_resolve, reject) => {
+          const signal = init?.signal;
+
+          signal?.addEventListener(
+            'abort',
+            () => {
+              reject(signal.reason);
+            },
+            { once: true },
+          );
+        }),
+    );
+
+    const request = searchCountries('Spain', controller.signal);
+
+    controller.abort();
+
+    await expect(request).rejects.toMatchObject({
       name: 'AbortError',
     });
   });

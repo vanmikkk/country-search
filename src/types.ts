@@ -23,6 +23,7 @@ export interface Country {
   subregion?: string | null;
   population: number;
   area: number;
+  borders?: string[];
   currencies?: CountryCurrency[];
   languages: CountryLanguage[];
   alpha2Code: string;
@@ -37,4 +38,5 @@ export interface CountryCard {
   region: string;
   population: number;
   languages: string[];
+  alpha3Code: string;
 }

@@ -190,6 +190,23 @@ describe('createCountrySearch', () => {
     expect(onResults).not.toHaveBeenCalled();
   });
 
+  it('should report TimeoutError', async () => {
+    const timeoutError = new DOMException('The operation timed out', 'TimeoutError');
+
+    const search = vi.fn().mockRejectedValue(timeoutError);
+    const onResults = vi.fn();
+    const onError = vi.fn();
+
+    const countrySearch = createCountrySearch(search, onResults, 300, onError);
+
+    countrySearch('Spain');
+    await vi.advanceTimersByTimeAsync(300);
+
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith(timeoutError);
+    expect(onResults).not.toHaveBeenCalled();
+  });
+
   it('should ignore errors from an outdated request', async () => {
     let rejectSpain!: (error: Error) => void;
 
