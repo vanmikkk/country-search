@@ -16,9 +16,9 @@ The identifier check does not replace actual request cancellation. `AbortControl
 
 The application distinguishes between different request outcomes:
 
-- `AbortError` — the request was intentionally cancelled because the user entered a new query or cleared the input. It is not displayed as an error.
+- `AbortError` — the request was cancelled because a newer search replaced it or the input was cleared. It is not displayed as an error.
 - `TimeoutError` — the request exceeded the allowed time. It is treated as a real error and displayed to the user.
-- `HttpError` — an HTTP response with an unsuccessful status other than 404.
+- `HttpError` — an unsuccessful HTTP response from the country search API, except for 404.
 - `404` — means that no countries match the query, so an empty array is returned instead of an error.
 
 `AbortSignal.any()` combines the user-controlled signal and the timeout signal into one signal passed to `fetch`.
