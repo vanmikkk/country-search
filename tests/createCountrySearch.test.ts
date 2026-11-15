@@ -174,6 +174,22 @@ describe('createCountrySearch', () => {
     expect(onResults).not.toHaveBeenCalled();
   });
 
+  it('should ignore AbortError', async () => {
+    const abortError = new DOMException('Request aborted', 'AbortError');
+
+    const search = vi.fn().mockRejectedValue(abortError);
+    const onResults = vi.fn();
+    const onError = vi.fn();
+
+    const countrySearch = createCountrySearch(search, onResults, 300, onError);
+
+    countrySearch('Spain');
+    await vi.advanceTimersByTimeAsync(300);
+
+    expect(onError).not.toHaveBeenCalled();
+    expect(onResults).not.toHaveBeenCalled();
+  });
+
   it('should ignore errors from an outdated request', async () => {
     let rejectSpain!: (error: Error) => void;
 
