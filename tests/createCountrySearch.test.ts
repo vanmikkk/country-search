@@ -102,15 +102,17 @@ describe('createCountrySearch', () => {
   it('should ignore results from an outdated request', async () => {
     let resolveSpain!: (countries: Country[]) => void;
     let resolveFrance!: (countries: Country[]) => void;
+    let spainSignal: AbortSignal | undefined;
 
     const search = vi
       .fn<(query: string, signal: AbortSignal) => Promise<Country[]>>()
-      .mockImplementationOnce(
-        () =>
-          new Promise<Country[]>((resolve) => {
-            resolveSpain = resolve;
-          }),
-      )
+      .mockImplementationOnce((_query, signal) => {
+        spainSignal = signal;
+
+        return new Promise<Country[]>((resolve) => {
+          resolveSpain = resolve;
+        });
+      })
       .mockImplementationOnce(
         () =>
           new Promise<Country[]>((resolve) => {
@@ -125,6 +127,9 @@ describe('createCountrySearch', () => {
     await vi.advanceTimersByTimeAsync(300);
 
     countrySearch('France');
+
+    expect(spainSignal?.aborted).toBe(true);
+
     await vi.advanceTimersByTimeAsync(300);
 
     const france: Country[] = [
