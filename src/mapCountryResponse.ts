@@ -1,4 +1,4 @@
-import type { Country, CountryCard } from './types';
+import type { Country, CountryCard } from './types.js';
 
 type CountryResponse = Pick<Country, 'name' | 'flag' | 'region' | 'population' | 'languages'> & {
   capital?: string | null;

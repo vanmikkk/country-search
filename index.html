@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Search for countries and explore their information." />
+    <title>Country Search</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app__header">
+        <h1>Country Search</h1>
+        <p>Find a country and explore its information.</p>
+      </header>
+
+      <section class="search" aria-label="Country search">
+        <label for="country-search">Country name</label>
+        <input
+          id="country-search"
+          name="country"
+          type="search"
+          placeholder="Start typing a country name..."
+          autocomplete="off"
+        />
+      </section>
+
+      <section class="results" aria-live="polite" aria-label="Search results">
+        <div id="search-status"></div>
+        <div id="country-list"></div>
+      </section>
+
+      <section id="country-details" aria-label="Country details" hidden></section>
+    </main>
+
+    <script type="module" src="./dist/index.js"></script>
+  </body>
+</html>

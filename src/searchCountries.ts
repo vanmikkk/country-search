@@ -1,4 +1,4 @@
-import type { Country } from './types';
+import type { Country } from './types.js';
 
 export class HttpError extends Error {
   constructor(

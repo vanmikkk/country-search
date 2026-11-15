@@ -1,5 +1,5 @@
-import { debounce } from './debounce';
-import type { Country } from './types';
+import { debounce } from './debounce.js';
+import type { Country } from './types.js';
 
 type SearchFunction = (query: string, signal: AbortSignal) => Promise<Country[]>;
 type ResultsCallback = (countries: Country[]) => void;
