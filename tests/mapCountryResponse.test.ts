@@ -10,6 +10,7 @@ describe('mapCountryResponse', () => {
       capital: 'Madrid',
       region: 'Europe',
       population: 47351567,
+      alpha3Code: 'ESP',
       languages: [
         {
           name: 'Spanish',
@@ -29,6 +30,7 @@ describe('mapCountryResponse', () => {
       region: 'Europe',
       population: 47351567,
       languages: ['Spanish'],
+      alpha3Code: 'ESP',
     });
   });
 
@@ -38,6 +40,7 @@ describe('mapCountryResponse', () => {
       flag: '🇦🇶',
       region: 'Polar',
       population: 1000,
+      alpha3Code: 'ATA',
       languages: [],
     };
 
@@ -50,6 +53,7 @@ describe('mapCountryResponse', () => {
       region: 'Polar',
       population: 1000,
       languages: [],
+      alpha3Code: 'ATA',
     });
   });
 });

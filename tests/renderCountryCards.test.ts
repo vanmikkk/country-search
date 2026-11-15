@@ -1,6 +1,6 @@
 /* @vitest-environment jsdom */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { renderCountryCards } from '../src/renderCountryCards';
 import type { CountryCard } from '../src/types';
@@ -20,7 +20,7 @@ describe('renderCountryCards', () => {
 
     const container = document.createElement('div');
 
-    renderCountryCards(countries, container);
+    renderCountryCards(countries, container, () => {});
 
     expect(container.textContent).toContain('Spain');
     expect(container.textContent).toContain('🇪🇸');
@@ -52,8 +52,33 @@ describe('renderCountryCards', () => {
 
     const container = document.createElement('div');
 
-    renderCountryCards(countries, container);
+    renderCountryCards(countries, container, () => {});
 
     expect(container.querySelectorAll('.country-card')).toHaveLength(2);
+  });
+
+  it('should call onSelect when a country card is clicked', () => {
+    const countries: CountryCard[] = [
+      {
+        name: 'Spain',
+        flag: '🇪🇸',
+        capital: 'Madrid',
+        region: 'Europe',
+        population: 47351567,
+        languages: ['Spanish'],
+      },
+    ];
+
+    const container = document.createElement('div');
+    const onSelect = vi.fn();
+
+    renderCountryCards(countries, container, onSelect);
+
+    const card = container.querySelector<HTMLButtonElement>('.country-card');
+
+    card?.click();
+
+    expect(onSelect).toHaveBeenCalledOnce();
+    expect(onSelect).toHaveBeenCalledWith(countries[0]);
   });
 });

@@ -1,11 +1,17 @@
 import type { CountryCard } from './types.js';
 
-export function renderCountryCards(countries: CountryCard[], container: HTMLElement): void {
+export function renderCountryCards(
+  countries: CountryCard[],
+  container: HTMLElement,
+  onSelect: (country: CountryCard) => void,
+): void {
   container.replaceChildren();
 
   countries.forEach((country) => {
-    const card = document.createElement('article');
+    const card = document.createElement('button');
+    card.type = 'button';
     card.className = 'country-card';
+    card.addEventListener('click', () => onSelect(country));
 
     const flag = document.createElement('span');
     flag.className = 'country-card__flag';
