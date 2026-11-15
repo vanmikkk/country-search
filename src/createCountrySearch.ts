@@ -40,6 +40,7 @@ export function createCountrySearch(
     controller?.abort();
 
     if (!query.trim()) {
+      debouncedSearch.cancel();
       return;
     }
 

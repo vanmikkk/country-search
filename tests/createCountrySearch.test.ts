@@ -81,13 +81,16 @@ describe('createCountrySearch', () => {
     expect(search).toHaveBeenCalledWith('Germany', expect.any(AbortSignal));
   });
 
-  it('should not search when the query is empty', () => {
+  it('should cancel a pending search when the query is cleared', () => {
     const search = vi
       .fn<(query: string, signal: AbortSignal) => Promise<Country[]>>()
       .mockResolvedValue([]);
 
     const onResults = vi.fn();
     const countrySearch = createCountrySearch(search, onResults, 300);
+
+    countrySearch('Spain');
+    vi.advanceTimersByTime(100);
 
     countrySearch('');
 

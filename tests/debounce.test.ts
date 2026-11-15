@@ -54,4 +54,18 @@ describe('debounce', () => {
 
     expect(callback).toHaveBeenCalledWith('Spain');
   });
+
+  it('should cancel pending execution', () => {
+    vi.useFakeTimers();
+
+    const callback = vi.fn();
+    const debouncedCallback = debounce(callback, 300);
+
+    debouncedCallback();
+    debouncedCallback.cancel();
+
+    vi.advanceTimersByTime(300);
+
+    expect(callback).not.toHaveBeenCalled();
+  });
 });
