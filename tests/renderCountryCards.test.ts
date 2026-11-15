@@ -15,6 +15,7 @@ describe('renderCountryCards', () => {
         region: 'Europe',
         population: 47351567,
         languages: ['Spanish'],
+        alpha3Code: 'ESP',
       },
     ];
 
@@ -39,6 +40,7 @@ describe('renderCountryCards', () => {
         region: 'Europe',
         population: 47351567,
         languages: ['Spanish'],
+        alpha3Code: 'ESP',
       },
       {
         name: 'France',
@@ -47,6 +49,7 @@ describe('renderCountryCards', () => {
         region: 'Europe',
         population: 68000000,
         languages: ['French'],
+        alpha3Code: 'FRA',
       },
     ];
 
@@ -66,6 +69,7 @@ describe('renderCountryCards', () => {
         region: 'Europe',
         population: 47351567,
         languages: ['Spanish'],
+        alpha3Code: 'ESP',
       },
     ];
 
