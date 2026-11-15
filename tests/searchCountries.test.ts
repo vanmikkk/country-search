@@ -91,6 +91,27 @@ describe('searchCountries', () => {
     });
   });
 
+  it('should abort the request after the timeout', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(
+      (_input, init) =>
+        new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => {
+            reject(init.signal?.reason);
+          });
+        }),
+    );
+
+    const request = expect(searchCountries('Spain')).rejects.toMatchObject({
+      name: 'TimeoutError',
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 5100));
+
+    await request;
+
+    expect(fetchMock).toHaveBeenCalled();
+  }, 10000);
+
   it('should abort the request when the provided signal is aborted', async () => {
     const controller = new AbortController();
 

@@ -34,6 +34,28 @@ describe('createCountrySearch', () => {
     expect(firstSignal?.aborted).toBe(true);
   });
 
+  it('should abort the previous request when the query is cleared', () => {
+    let requestSignal: AbortSignal | undefined;
+
+    const search = vi.fn((_query: string, signal: AbortSignal): Promise<Country[]> => {
+      requestSignal = signal;
+      return new Promise<Country[]>(() => {});
+    });
+
+    const onResults = vi.fn();
+    const countrySearch = createCountrySearch(search, onResults, 300);
+
+    countrySearch('Spain');
+    vi.advanceTimersByTime(300);
+
+    expect(requestSignal?.aborted).toBe(false);
+
+    countrySearch('');
+
+    expect(requestSignal?.aborted).toBe(true);
+    expect(search).toHaveBeenCalledTimes(1);
+  });
+
   it('should search only for the latest query after the debounce delay', () => {
     const search = vi
       .fn<(query: string, signal: AbortSignal) => Promise<Country[]>>()
