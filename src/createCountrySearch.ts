@@ -27,7 +27,11 @@ export function createCountrySearch(
         onResults(countries);
       })
       .catch((error: unknown) => {
-        if (currentRequestId !== requestId || currentController.signal.aborted) {
+        if (
+          currentRequestId !== requestId ||
+          currentController.signal.aborted ||
+          (error instanceof Error && error.name === 'AbortError')
+        ) {
           return;
         }
 
