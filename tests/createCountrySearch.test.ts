@@ -100,7 +100,6 @@ describe('createCountrySearch', () => {
   });
 
   it('should ignore results from an outdated request', async () => {
-    let resolveSpain!: (countries: Country[]) => void;
     let resolveFrance!: (countries: Country[]) => void;
     let spainSignal: AbortSignal | undefined;
 
@@ -109,8 +108,14 @@ describe('createCountrySearch', () => {
       .mockImplementationOnce((_query, signal) => {
         spainSignal = signal;
 
-        return new Promise<Country[]>((resolve) => {
-          resolveSpain = resolve;
+        return new Promise<Country[]>((_, reject) => {
+          signal.addEventListener(
+            'abort',
+            () => {
+              reject(signal.reason);
+            },
+            { once: true },
+          );
         });
       })
       .mockImplementationOnce(
@@ -149,9 +154,6 @@ describe('createCountrySearch', () => {
     ];
 
     resolveFrance(france);
-    await Promise.resolve();
-
-    resolveSpain([]);
     await Promise.resolve();
 
     expect(onResults).toHaveBeenCalledTimes(1);
